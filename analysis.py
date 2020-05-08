@@ -153,7 +153,7 @@ def joinTokens(tokenized_tweet):
     total_data['tidy_tweet'] = tokenized_tweet
     
 
-nltk.download('punkt')
+#nltk.download('punkt')
 
 # converting tidy_tweets column to numerical value using bag of words algorithm
 
