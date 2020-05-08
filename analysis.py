@@ -6,18 +6,78 @@ import seaborn as sns
 import string
 import nltk
 import warnings
+import tweepy
+import datetime
+from time import sleep  # Used for limiting API calls
+import pickle
+from collections import OrderedDict
+import secrets
 from tkinter import *
 from nltk.stem.porter import * 
+
+
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+
 #%matplotlib inline
+
+# get tweets based on a query
+def getTweet(query):
+    Config= secrets.twitterConfig()
+
+    consumer_key = Config.getConsumerKey()
+    consumer_secret = Config.getConsumerSecret()
+    access_token = Config.getAccessToken()
+    access_token_secret = Config.getAccessTokenSecret()
+
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    api = tweepy.API(auth, wait_on_rate_limit=True)
+    
+    tweet_count=1000
+    maxId=0
+    tweets_dict=[]
+    try:
+        for i in range((int)(tweet_count/100)):
+            fetched_tweets = api.search(q = query, count = 100,max_id=maxId) 
+            maxId=fetched_tweets.max_id
+            # parsing tweets one by one 
+            for tweet in fetched_tweets: 
+                # empty dictionary to store required params of a tweet 
+                parsed_tweet={}
+                parsed_tweet["text"] = tweet.text
+                
+                # parsed_tweet = {"user": [], "text": [], "created": []}
+
+                # saving text of tweet 
+                # parsed_tweet["user"] = tweet.user.screen_name
+                # parsed_tweet["created"]= tweet.created_at
+                # saving sentiment of tweet 
+    #                     parsed_tweet['sentiment'] = self.get_tweet_sentiment(tweet.text) 
+
+                # appending parsed tweet to tweets list 
+                if tweet.retweet_count > 0: 
+                    # if tweet has retweets, ensure that it is appended only once 
+                    if parsed_tweet not in tweets_dict: 
+                        tweets_dict.append(parsed_tweet) 
+                else: 
+                    tweets_dict.append(parsed_tweet) 
+    except tweepy.TweepError as e: 
+            # print error (if any) 
+            print("Error : " + str(e))
+
+    tweet_data = pd.DataFrame(tweets_dict)
+    tweet_data.to_csv('Dataset/query_tweets.csv')
+
+
 
 # loading training and test data
 
 train  = pd.read_csv('Dataset/train_tweets.csv')
-test = pd.read_csv('Dataset/test_tweets.csv')
+test  = pd.read_csv('Dataset/test_tweets.csv')
 
 #combining training and and test data for preprocessing 
-total_data = train.append(test, ignore_index=True)
+total_data = train
 
 #Generate modules for the task
 def preprocess():
@@ -46,7 +106,7 @@ def getTotalSet() :
 def removePatternUtil(input_txt, pattern):
     r = re.findall(pattern, input_txt)
     for i in r:
-        input_txt = re.sub(i, '', input_txt)
+        input_txt = re.tweet(i, '', input_txt)
         
     return input_txt
 
