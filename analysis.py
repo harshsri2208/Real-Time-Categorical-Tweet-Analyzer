@@ -53,7 +53,7 @@ def getTweet(query):
                 # parsed_tweet["user"] = tweet.user.screen_name
                 # parsed_tweet["created"]= tweet.created_at
                 # saving sentiment of tweet 
-    #                     parsed_tweet['sentiment'] = self.get_tweet_sentiment(tweet.text) 
+                #parsed_tweet['sentiment'] = self.get_tweet_sentiment(tweet.text) 
 
                 # appending parsed tweet to tweets list 
                 if tweet.retweet_count > 0: 
@@ -63,8 +63,8 @@ def getTweet(query):
                 else: 
                     tweets_dict.append(parsed_tweet) 
     except tweepy.TweepError as e: 
-            # print error (if any) 
-            print("Error : " + str(e))
+        # print error (if any) 
+        print("Error : " + str(e))
 
     tweet_data = pd.DataFrame(tweets_dict)
     tweet_data.to_csv('Dataset/query_tweets.csv')
@@ -197,5 +197,5 @@ def bagOfWords():
             else: 
                 vector.append(0) 
         bow.append(vector) 
-    return np.asarray(bow);
+    return np.asarray(bow)
 
