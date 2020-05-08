@@ -73,7 +73,7 @@ for i in range(len(tokenized_tweet)):
 total_data['tidy_tweet'] = tokenized_tweet
 total_data.head()
 
-nltk.download('punkt')
+#nltk.download('punkt')
 
 # converting tidy_tweets column to numerical value using bag of words algorithm
 
@@ -118,7 +118,7 @@ for data,lword in zip(total_data['tidy_tweet'].values,wordlist):
     bow.append(vector) 
 bow = np.asarray(bow)
 
-def bagOfWordsArray() :
+def getbagOfWordsArray() :
     return bow
 
 def getTrainSet() :
@@ -129,3 +129,6 @@ def getTestSet() :
 
 def getTotalSet() :
     return total_data
+
+def getFreqWords() :
+    return freq_words
