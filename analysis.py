@@ -19,9 +19,31 @@ test = pd.read_csv('Dataset/test_tweets.csv')
 #combining training and and test data for preprocessing 
 total_data = train.append(test, ignore_index=True)
 
+#Generate modules for the task
+def preprocess():
+    removePattern()
+    removeShortWords()
+    tokenized_tweet = tokenize()
+    tokenized_tweet = stemWords(tokenized_tweet)
+    joinTokens(tokenized_tweet)
+    print("\n\nPreprocessing done\n\n")
+    
+def bagOfWordsArray() :
+    preprocess()
+    return bagOfWords()
+
+def getTrainSet() :
+    return train
+
+def getTestSet() :
+    return test
+
+def getTotalSet() :
+    return total_data
+
 #function to remove @word pattern from the tweets as they do not add any value
 
-def remove_pattern(input_txt, pattern):
+def removePatternUtil(input_txt, pattern):
     r = re.findall(pattern, input_txt)
     for i in r:
         input_txt = re.sub(i, '', input_txt)
@@ -29,22 +51,23 @@ def remove_pattern(input_txt, pattern):
     return input_txt
 
 # removing @username patterns from tweets using remove_pattern function
-
-print('\n\nRemoving  Twitter Handles \n\n')
-total_data['tidy_tweet'] = np.vectorize(remove_pattern)(total_data['tweet'], "@[\w]*")
-total_data.head()
+def removePattern():
+    print('\n\nRemoving  Twitter Handles \n\n')
+    total_data['tidy_tweet'] = np.vectorize(removePatternUtil)(total_data['tweet'], "@[\w]*")
+    total_data.head()
 
 # words with small lenght i.e., words having length smaller than 3 hardly hold any sentiment
 # hence it is better to remove such words
-
-print('\n\nRemoving Short Words\n\n')
-total_data['tidy_tweet'] = total_data['tidy_tweet'].apply(lambda x: ' '.join([w for w in x.split() if len(w)>3]))
-total_data.head()
+def removeShortWords():
+    print('\n\nRemoving Short Words\n\n')
+    total_data['tidy_tweet'] = total_data['tidy_tweet'].apply(lambda x: ' '.join([w for w in x.split() if len(w)>3]))
+    total_data.head()
 
 # separating each word as a token
-
-print('\n\nTweet Tokenization\n\n')
-tokenized_tweet = total_data['tidy_tweet'].apply(lambda x: x.split())
+def tokenize():
+    print('\n\nTweet Tokenization\n\n')
+    tokenized_tweet = total_data['tidy_tweet'].apply(lambda x: x.split())
+    return tokenized_tweet
 
 '''
 # removing punctuations like period, comma and semi-colon seems like a good idea but it is actually decreasing the accuracy 
@@ -56,22 +79,19 @@ for i in range(len(tokenized_tweet)):
         tokenized_tweet[i][j]=tokenized_tweet[i][j].replace('[.,;:]','')
         
 '''        
-
-tokenized_tweet.head()
-
 # stemming words i.e, words are play,playing,played are treated similarly
-
-print('\n\nStemming\n\n')
-stemmer = PorterStemmer()
-tokenized_tweet = tokenized_tweet.apply(lambda x: [stemmer.stem(i) for i in x])
-tokenized_tweet.head()
+def stemWords(tokenized_tweet):
+    print('\n\nStemming\n\n')
+    stemmer = PorterStemmer()
+    tokenized_tweet = tokenized_tweet.apply(lambda x: [stemmer.stem(i) for i in x])
+    return tokenized_tweet
 
 #stiching these tokens together
-
-for i in range(len(tokenized_tweet)):
-    tokenized_tweet[i] = ' '.join(tokenized_tweet[i])
-total_data['tidy_tweet'] = tokenized_tweet
-total_data.head()
+def joinTokens(tokenized_tweet):
+    for i in range(len(tokenized_tweet)):
+        tokenized_tweet[i] = ' '.join(tokenized_tweet[i])
+    total_data['tidy_tweet'] = tokenized_tweet
+    
 
 nltk.download('punkt')
 
@@ -93,39 +113,29 @@ print(bow.shape)
 '''
 # implementing bag of words
 
-word2count = {}
-wordlist=[]
-for data in total_data['tidy_tweet'].values: 
-    words = nltk.word_tokenize(data)
-    wordlist.append(words)
-    for word in words: 
-        if word not in word2count.keys(): 
-            word2count[word] = 1
-        else: 
-            word2count[word] += 1
-            
-import heapq 
-freq_words = heapq.nlargest(1000, word2count, key=word2count.get)
+def bagOfWords():
+    word2count = {}
+    wordlist=[]
+    for data in total_data['tidy_tweet'].values: 
+        words = nltk.word_tokenize(data)
+        wordlist.append(words)
+        for word in words: 
+            if word not in word2count.keys(): 
+                word2count[word] = 1
+            else: 
+                word2count[word] += 1
 
-bow = [] 
-for data,lword in zip(total_data['tidy_tweet'].values,wordlist): 
-    vector = [] 
-    for word in freq_words: 
-        if word in lword: 
-            vector.append(1) 
-        else: 
-            vector.append(0) 
-    bow.append(vector) 
-bow = np.asarray(bow)
+    import heapq 
+    freq_words = heapq.nlargest(1000, word2count, key=word2count.get)
 
-def bagOfWordsArray() :
-    return bow
+    bow = [] 
+    for data,lword in zip(total_data['tidy_tweet'].values,wordlist): 
+        vector = [] 
+        for word in freq_words: 
+            if word in lword: 
+                vector.append(1) 
+            else: 
+                vector.append(0) 
+        bow.append(vector) 
+    return np.asarray(bow);
 
-def getTrainSet() :
-    return train
-
-def getTestSet() :
-    return test
-
-def getTotalSet() :
-    return total_data
