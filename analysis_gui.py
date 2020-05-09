@@ -12,7 +12,7 @@ window.minsize(600,400)
 def clickMe():
     #label.configure(text= tweet.get())
 
-    tweetSentiment = 0
+    '''tweetSentiment = 0
 
     tweetAnalyze = tweet.get()
     tweetAnalyze = analysis.remove_pattern(tweetAnalyze, "@[\w]*")
@@ -42,11 +42,15 @@ def clickMe():
     print(len(bow))
     total_data = analysis.getTotalSet()
     print(len(total_data))
-    label.configure(text = train.getSentiment(bow, analysis.getTrainSet(), bowVector))
+    label.configure(text = train.getSentiment(bow, analysis.getTrainSet(), bowVector))'''
+
+    total_data = analysis.getTweet(tweet.get())
+    bow = analysis.bagOfWordsArray(total_data)
+    print(bow)
 
 
  
-label = ttk.Label(window, text = "Enter Your Tweet")
+label = ttk.Label(window, text = "Enter Your Keyword")
 label.grid(column = 0, row = 0)
  
  
@@ -57,7 +61,7 @@ tweetEntered = ttk.Entry(window, width = 15, textvariable = tweet)
 tweetEntered.grid(column = 0, row = 1)
  
  
-button = ttk.Button(window, text = "Get Sentiment", command = clickMe)
+button = ttk.Button(window, text = "Train Model based on query", command = clickMe)
 button.grid(column= 0, row = 2)
  
 window.mainloop()
