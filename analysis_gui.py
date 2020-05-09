@@ -3,6 +3,12 @@ from tkinter import ttk
 import analysis
 from nltk.stem.porter import PorterStemmer
 import train
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+
+total_data = None
+bow = None
+lreg = None
 
 window = tk.Tk()
  
@@ -11,11 +17,44 @@ window.minsize(600,400)
  
 def clickMe():
     #label.configure(text= tweet.get())
+    global total_data
+    global bow
+    global lreg
 
-    '''tweetSentiment = 0
+    total_data = analysis.getTweet(tweet.get())
+    bow = analysis.bagOfWordsArray(total_data)
 
+    lreg = LogisticRegression() # creating an object of Logistic regression class
+    lreg.fit(bow, total_data['label'])
+
+    window.destroy()
+ 
+label = ttk.Label(window, text = "Enter Your Keyword")
+label.grid(column = 0, row = 0)
+ 
+tweet = tk.StringVar()
+tweetEntered = ttk.Entry(window, width = 15, textvariable = tweet)
+tweetEntered.grid(column = 0, row = 1) 
+ 
+button = ttk.Button(window, text = "Train Model based on query", command = clickMe)
+button.grid(column= 0, row = 2)
+ 
+window.mainloop()
+
+window = tk.Tk()
+ 
+window.title("Tweets Analysis")
+window.minsize(600,400)
+
+
+def getSentiment() :
+
+    global total_data
+    global bow
+    global lreg
+    
     tweetAnalyze = tweet.get()
-    tweetAnalyze = analysis.remove_pattern(tweetAnalyze, "@[\w]*")
+    tweetAnalyze = analysis.removePatternUtil(tweetAnalyze, "@[\w]*")
     tweetAnalyze = ' '.join([w for w in tweetAnalyze.split() if len(w)>3])
 
     tweetAnalyze = tweetAnalyze.split()
@@ -35,22 +74,15 @@ def clickMe():
         else :
             bowVector.append(0)
 
-    print(tweetAnalyze)
-    print(bowVector)
+    #print(tweetAnalyze)
+    #print(bowVector)
 
-    bow = analysis.getbagOfWordsArray()
-    print(len(bow))
-    total_data = analysis.getTotalSet()
-    print(len(total_data))
-    label.configure(text = train.getSentiment(bow, analysis.getTrainSet(), bowVector))'''
+    label.configure(text = train.getSentiment(lreg, bowVector))
 
-    total_data = analysis.getTweet(tweet.get())
-    bow = analysis.bagOfWordsArray(total_data)
-    print(bow)
 
 
  
-label = ttk.Label(window, text = "Enter Your Keyword")
+label = ttk.Label(window, text = "Enter tweet or phrase for sentiment")
 label.grid(column = 0, row = 0)
  
  
@@ -61,7 +93,8 @@ tweetEntered = ttk.Entry(window, width = 15, textvariable = tweet)
 tweetEntered.grid(column = 0, row = 1)
  
  
-button = ttk.Button(window, text = "Train Model based on query", command = clickMe)
+button = ttk.Button(window, text = "Get Sentiment", command = getSentiment)
 button.grid(column= 0, row = 2)
+
  
 window.mainloop()

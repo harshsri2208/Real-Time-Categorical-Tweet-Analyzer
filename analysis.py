@@ -21,6 +21,8 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 #%matplotlib inline
 
+freq_words = None
+
 #Preprocessing for sentiment analysis
 def clean_tweet(tweet): 
     ''' 
@@ -182,6 +184,7 @@ print(bow.shape)
 # implementing bag of words
 
 def bagOfWords(total_data):
+    global freq_words
     word2count = {}
     wordlist=[]
     for data in total_data['tidy_tweet'].values: 
@@ -207,3 +210,6 @@ def bagOfWords(total_data):
         bow.append(vector) 
     return np.asarray(bow)
 
+def getFreqWords() :
+    global freq_words
+    return freq_words
