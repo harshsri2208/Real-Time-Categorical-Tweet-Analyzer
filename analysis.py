@@ -10,9 +10,9 @@ import tweepy
 import datetime
 from time import sleep  # Used for limiting API calls
 import pickle
+from textblob import TextBlob
 from collections import OrderedDict
 import secrets
-from tkinter import *
 from nltk.stem.porter import * 
 
 
@@ -20,6 +20,27 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 #%matplotlib inline
+
+#Preprocessing for sentiment analysis
+def clean_tweet(tweet): 
+    ''' 
+    Utility function to clean tweet text by removing links, special characters 
+    using simple regex statements. 
+    '''
+    return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split()) 
+  
+def get_tweet_sentiment(tweet): 
+    ''' 
+    Utility function to classify sentiment of passed tweet 
+    using textblob's sentiment method 
+    '''
+    # create TextBlob object of passed tweet text 
+    analysis = TextBlob(clean_tweet(tweet)) 
+    # set sentiment 
+    if analysis.sentiment.polarity < 0: 
+        return 1
+    else: 
+        return 0
 
 # get tweets based on a query
 def getTweet(query):
@@ -36,7 +57,7 @@ def getTweet(query):
     
     tweet_count=1000
     maxId=0
-    tweets_dict=[]
+    tweets_dict={"text":[],"sentiment":[]}
     try:
         for i in range((int)(tweet_count/100)):
             fetched_tweets = api.search(q = query, count = 100,max_id=maxId) 
@@ -45,26 +66,27 @@ def getTweet(query):
             for tweet in fetched_tweets: 
                 # empty dictionary to store required params of a tweet 
                 parsed_tweet={}
-                parsed_tweet["text"] = tweet.text
-                
-                # parsed_tweet = {"user": [], "text": [], "created": []}
+                if not tweet.text:
+                    continue
+               # empty dictionary to store required params of a tweet 
 
                 # saving text of tweet 
-                # parsed_tweet["user"] = tweet.user.screen_name
-                # parsed_tweet["created"]= tweet.created_at
+                parsed_tweet['text'] = tweet.text 
                 # saving sentiment of tweet 
-                #parsed_tweet['sentiment'] = self.get_tweet_sentiment(tweet.text) 
+                parsed_tweet['sentiment'] = get_tweet_sentiment(tweet.text) 
 
                 # appending parsed tweet to tweets list 
                 if tweet.retweet_count > 0: 
                     # if tweet has retweets, ensure that it is appended only once 
-                    if parsed_tweet not in tweets_dict: 
-                        tweets_dict.append(parsed_tweet) 
+                    if parsed_tweet["text"] not in tweets_dict["text"]: 
+                        tweets_dict["text"].append(parsed_tweet["text"]) 
+                        tweets_dict["sentiment"].append(parsed_tweet["sentiment"]) 
                 else: 
-                    tweets_dict.append(parsed_tweet) 
+                    tweets_dict["text"].append(parsed_tweet["text"]) 
+                    tweets_dict["sentiment"].append(parsed_tweet["sentiment"])
     except tweepy.TweepError as e: 
-        # print error (if any) 
-        print("Error : " + str(e))
+            # print error (if any) 
+            print("Error : " + str(e))
 
     tweet_data = pd.DataFrame(tweets_dict)
     tweet_data.to_csv('Dataset/query_tweets.csv')
@@ -153,7 +175,7 @@ def joinTokens(tokenized_tweet):
     total_data['tidy_tweet'] = tokenized_tweet
     
 
-#nltk.download('punkt')
+nltk.download('punkt')
 
 # converting tidy_tweets column to numerical value using bag of words algorithm
 
@@ -197,5 +219,5 @@ def bagOfWords():
             else: 
                 vector.append(0) 
         bow.append(vector) 
-    return np.asarray(bow)
+    return np.asarray(bow);
 
