@@ -79,8 +79,6 @@ def getSentiment() :
 
     label.configure(text = train.getSentiment(lreg, bowVector))
 
-
-
  
 label = ttk.Label(window, text = "Enter tweet or phrase for sentiment")
 label.grid(column = 0, row = 0)

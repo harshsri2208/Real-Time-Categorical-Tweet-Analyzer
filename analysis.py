@@ -200,9 +200,9 @@ def bagOfWords(total_data):
     freq_words = heapq.nlargest(1000, word2count, key=word2count.get)
 
     bow = [] 
-    for data,lword in zip(total_data['tidy_tweet'].values,wordlist): 
+    for data,lword in zip(total_data['tidy_tweet'].values,wordlist) : 
         vector = [] 
-        for word in freq_words: 
+        for word in freq_words : 
             if word in lword: 
                 vector.append(1) 
             else: 
