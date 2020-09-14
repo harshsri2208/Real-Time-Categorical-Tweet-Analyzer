@@ -27,18 +27,21 @@ This project focuses on extracting sentiments from tweets on twitter to identify
 
 1. You can run the application using the analysis_gui.py
 
+
 2. Run it using python analysis_gui.py
    ![](images/readme-images/run.JPG)
+
 
 3. This opens up a gui asking you to enter a word for fetching the tweets and training the model.
    ![](images/readme-images/train.JPG)
 
+
 4. After training of the model, you can enter a word and then model predicts its sentiment.
    ![](images/readme-images/test.JPG)
    
-5. Sentiment for the entered word
-   ![](images/readme-images/result.JPG)
    
+5. Sentiment for the entered word
+   ![](images/readme-images/result.JPG)   
 
 # Contributing
 
