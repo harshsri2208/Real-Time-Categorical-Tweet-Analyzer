@@ -38,6 +38,7 @@ This project focuses on extracting sentiments from tweets on twitter to identify
    
 5. Sentiment for the entered word
    ![](images/readme-images/result.JPG)
+   
 
 # Contributing
 
