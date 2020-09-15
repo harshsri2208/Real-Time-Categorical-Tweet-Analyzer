@@ -1,6 +1,6 @@
-# Twitter Sentiment Analysis
+# Real Time Categorical Tweet Analyzer
 
-Analysis of tweets by extracting sentiments
+Analysis of tweets fetched in real time from twitter based on a categorical keyword and then sentiment evaluation of new tweets based on the tweet data 
 
 
 # Contents
@@ -14,7 +14,12 @@ Analysis of tweets by extracting sentiments
 
 # Description
 
-This project focuses on extracting sentiments from tweets on twitter to identify the kind of emotion/sentiment associated with a particular person, thing, topic, idea, etc.
+There is a great spectrum of sentiments that can be associated with tweets from different domains.<br>
+This project bridges the gap between the spectrum of emotions and sentiments across tweets from various domains and at different points of time.<br>
+It provides real time sentiment analysis on categorical tweets and also providing the appropriate sentiments for new data.<br>
+It focuses on analysing real time tweets data from twitter based on a keyword and extracting sentiments from tweets on twitter to identify the kind of emotion/sentiment associated with a particular person, thing, topic, idea, etc.<br>
+The fetched tweets are used to train a NLP model which in turn produces appropriate sentiment score on any new tweet based on the real time data. The user knows the sentiment associated with that tweet before tweeting 
+
 
 # Installation
 
