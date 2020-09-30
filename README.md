@@ -18,7 +18,7 @@ There is a great spectrum of sentiments that can be associated with tweets from 
 This project bridges the gap between the spectrum of emotions and sentiments across tweets from various domains and at different points of time.<br>
 It provides real time sentiment analysis on categorical tweets and also providing the appropriate sentiments for new data.<br>
 It focuses on analysing real time tweets data from twitter based on a keyword and extracting sentiments from tweets on twitter to identify the kind of emotion/sentiment associated with a particular person, thing, topic, idea, etc.<br>
-The fetched tweets are used to train a NLP model which in turn produces appropriate sentiment score on any new tweet based on the real time data. The user knows the sentiment associated with that tweet before tweeting 
+The fetched tweets are used to train a NLP model which in turn produces appropriate sentiment score on any new tweet based on the real time data. The user knows the sentiment associated with that tweet before tweeting.
 
 
 # Installation
@@ -49,9 +49,9 @@ The fetched tweets are used to train a NLP model which in turn produces appropri
 
 # Contributing
 
-To contribute to the project follow the below steps
+To contribute to the project follow the below steps :-
 
-1. Fork the project
-2. Follow the installation steps provided above on your local
+1. Fork the project.
+2. Follow the installation steps provided above on your local.
 3. For any additional feature or bug create a new issue. Or work on an existing issue.
 4. Create a pull request mentioning the issue in your pull request.
